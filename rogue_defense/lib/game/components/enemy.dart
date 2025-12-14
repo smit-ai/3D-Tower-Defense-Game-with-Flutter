@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/resources.dart';
+import 'package:vector_math/vector_math_64.dart';
 
 enum EnemyType {
   standard,
