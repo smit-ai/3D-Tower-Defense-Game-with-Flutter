@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flame/components.dart';
-import 'package:flame_3d/game.dart'; // For Vector3 if needed
+// import 'package:flame_3d/game.dart'; // For Vector3 if needed
 import 'enemy.dart';
 
 class EnemySpawner extends Component {
