@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:flame_3d/game.dart';
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/resources.dart';
 
@@ -18,57 +17,62 @@ class Enemy extends MeshComponent {
     required Vector3 position,
     required this.targetPosition,
     this.type = EnemyType.standard,
-  }) : super(position: position) {
-    _setupEnemy();
+  }) : super(position: position, mesh: _meshForType(type)) {
+    speed = _speedForType(type);
   }
 
-  void _setupEnemy() {
+  static Mesh _meshForType(EnemyType type) {
     switch (type) {
       case EnemyType.standard:
-        speed = 3.0;
-        mesh = CuboidMesh(
+        return CuboidMesh(
           size: Vector3(0.8, 0.8, 0.8),
           material: SpatialMaterial(
             albedoColor: const Color(0xFFFF0000), // Red
             metallic: 0.5,
           ),
         );
-        break;
       case EnemyType.fast:
-        speed = 5.0;
-        mesh = CuboidMesh(
+        return CuboidMesh(
           size: Vector3(0.5, 0.5, 0.5),
           material: SpatialMaterial(
             albedoColor: const Color(0xFFFFFF00), // Yellow
             metallic: 0.5,
           ),
         );
-        break;
       case EnemyType.heavy:
-        speed = 1.5;
-        mesh = CuboidMesh(
+        return CuboidMesh(
           size: Vector3(1.2, 1.2, 1.2),
           material: SpatialMaterial(
             albedoColor: const Color(0xFF800080), // Purple
             metallic: 0.5,
           ),
         );
-        break;
+    }
+  }
+
+  static double _speedForType(EnemyType type) {
+    switch (type) {
+      case EnemyType.standard:
+        return 3.0;
+      case EnemyType.fast:
+        return 5.0;
+      case EnemyType.heavy:
+        return 1.5;
     }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    
+
     // Move towards target
     final direction = targetPosition - position;
     direction.y = 0; // Keep movement on the ground plane
-    
+
     if (direction.length > 0.1) {
       direction.normalize();
       position.add(direction * speed * dt);
-      
+
       // Also look at target
       _lookAt(targetPosition);
     } else {
@@ -84,13 +88,13 @@ class Enemy extends MeshComponent {
     final up = Vector3(0, 1, 0);
     final right = up.cross(forward)..normalize();
     final realUp = forward.cross(right)..normalize();
-    
+
     final rotMat = Matrix3(
       right.x, realUp.x, forward.x,
       right.y, realUp.y, forward.y,
       right.z, realUp.z, forward.z,
     );
-    
+
     transform.rotation = Quaternion.fromRotation(rotMat);
   }
 }
